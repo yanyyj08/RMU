@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <META HTTP-EQUIV="expires" CONTENT="0">
+    <title>环网箱监控</title>
+    <link rel="stylesheet" type="text/css" href="../Content/mdl-v1.1.2/material.min.css" />
+    <link rel="stylesheet" type="text/css" href="../Static/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../Static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../Static/css/common.css" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored search-btn" id="search">
+                <i class="material-icons">search</i>
+            </button>
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <div id="back" class="material-icons md-36 back-icon">
+                        <a class="material-icons mdl-badge mdl-badge--overlap f36" id="showChart">insert_chart</a>
+                        <a class="material-icons mdl-badge mdl-badge--overlap f36" id="showTable">list</a>
+                    </div>
+                    <h1 class="mdl-layout__title" id="title">历史数据</h1>
+                    <div class="mdl-layout-spacer"></div>
+                    <div class="mdl-navigation"></div>
+                </div>
+            </header>
+            <main class="mdl-layout__content">
+                <div class="search-line clearfix">
+                    <!-- <form action="#"> -->
+                    <div class="choose-time">
+                        <label for="beginTime" class="material-icons" style="color:#3f51b5">date_range</label>
+                        <input id="beginTime" class="kbtn" readonly="readonly" />
+                    </div>
+                    <div id="datePlugin"></div>
+                    <!-- <div id="period" class="choose-period">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+                            <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="day" checked>
+                            <span class="mdl-radio__label">日</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+                            <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="week">
+                            <span class="mdl-radio__label">周</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+                            <input type="radio" id="option-3" class="mdl-radio__button" name="options" value="month">
+                            <span class="mdl-radio__label">月</span>
+                        </label>
+                    </div> -->
+                    <div class="search-select">
+                        <select id="period">
+                            <option value="day">日</option>
+                            <option value="week">周</option>
+                            <option value="month">月</option>
+                        </select>
+                    </div>
+                    <!-- </form> -->
+                </div>
+                <div class="search-result">
+                    <div class="change-chart-btn" id="changeChart">
+                        <select id="chartNum">
+                            <option value="chart1">正常数据</option>
+                            <option value="chart2">计算后的数据</option>
+                        </select>
+                    </div>
+                    <div id="historyChart" style="display: none;"></div>
+                    <div id="historyList" style="position: relative;">
+                        <table id="historyTable" class="mdl-data-table mdl-js-data-table">
+                            <thead>
+                                <tr>
+                                    <th class="mdl-data-table__cell--non-numeric">日期</th>
+                                    <th class="mdl-data-table__cell--non-numeric">内部温度</th>
+                                    <th class="mdl-data-table__cell--non-numeric">内部湿度</th>
+                                    <th class="mdl-data-table__cell--non-numeric">外部湿度</th>
+                                    <th class="mdl-data-table__cell--non-numeric">外部湿度</th>
+                                </tr>
+                            </thead>
+                            <tbody id="searchTbody">
+                            </tbody>
+                        </table>
+                        <div class="loading" id="loadMore" data-state="true">
+                            <div class="load-effect">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div class="load-effect-text">加载中...</div>
+                        </div>
+                        <div class="loading" id="noMore" style="display: none;">没有更多数据</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="../Scripts/jquery-2.2.1.min.js"></script>
+    <script src="../Content/mdl-v1.1.2/material.min.js"></script>
+    <script src="../Scripts/echarts.common.min.js"></script>
+    <script src="../Static/js/date.js"></script>
+    <script src="../Static/js/iscroll.js"></script>
+    <script>
+    window.onbeforeunload = function() {
+        var n = window.event.screenX - window.screenLeft;
+        var b = n > document.documentElement.scrollWidth - 20;
+        if (b && window.event.clientY < 0 || window.event.altKey) {
+            alert("是关闭而非刷新");
+            window.event.returnValue = "";
+        } else {
+            alert("是刷新而非关闭");
+        }
+    }
+    $('#beginTime').date();
+    var timeFormat = function(date, complete) {
+        var year = date.getFullYear(),
+            month = unitsDigit(date.getMonth() + 1),
+            day = unitsDigit(date.getDate()),
+            hour = unitsDigit(date.getHours()),
+            min = unitsDigit(date.getMinutes()),
+            sec = unitsDigit(date.getSeconds());
+        if (complete) {
+            return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
+        } else {
+            return year + '-' + month + '-' + day;
+        }
+    }
+
+    var unitsDigit = function(date) {
+        date = date < 10 ? ('0' + date) : date;
+        return date;
+    }
+
+    var today = timeFormat(new Date(), false);
+    $('#beginTime').val(today).attr('placeholder', today);
+
+    var reg = new RegExp('(^|&)id=([^&]*)(&|$)');
+    var r = window.location.search.substr(1).match(reg) ? window.location.search.substr(1).match(reg)[2] : '00000010';
+    var viewWidth = document.documentElement.clientWidth,
+        viewHeight = document.documentElement.clientHeight;
+
+    var wrapperWidth = $('.wrapper').width();
+    $('#historyChart').css({
+        'width': wrapperWidth + 'px',
+        'height': viewHeight - 150 + 'px'
+    })
+
+    $('#queryTime').focus(function() {
+        $(this).parent().css('padding', '0 0 20px');
+    }).blur(function() {
+        if ($(this).siblings('.mdl-textfield__error').css('visibility') == 'hidden') {
+            $(this).parent().css('padding', '0');
+        }
+    });
+
+    $('.search-select').click(function(e) {
+        e.preventDefault();
+    })
+
+    var pageNo = 1,
+        timeStr = '?';
+    $('#search').on('click', function() {
+        $('#showTable').hide();
+        $('#historyChart').hide();
+        $('.change-chart-btn').hide();
+        $('#historyList').show();
+        $('#searchTbody').html('');
+        $('#loadMore').show();
+        $('#noMore').hide();
+        var startTime = $('#beginTime').val(),
+            // period = $('#period input[name="options"]:checked').val(),
+            period = $('#period').val(),
+            endTime;
+        pageNo = 1;
+        timeStr = '?';
+        if (startTime) {
+            // startTime = startTime.split('');
+            // startTime.splice(6, 0, '-');
+            // startTime.splice(4, 0, '-');
+            endTime = new Date(startTime.replace(/-/g, "/"))
+            startTime = new Date(startTime.replace(/-/g, "/"))
+            switch (period) {
+                case 'day':
+                    endTime = startTime;
+                    break;
+                case 'week':
+                    endTime.setDate(startTime.getDate() + 7);
+                    break;
+                case 'month':
+                    endTime.setMonth(startTime.getMonth() + 1);
+                    endTime.setDate(startTime.getDate() - 1);
+                    break;
+            }
+            timeStr += 'begin=' + timeFormat(startTime, false) + '&end=' + timeFormat(endTime, false);
+        }
+        var settings = {
+            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pageNo=' + pageNo + '&pageSize=50',
+            type: 'GET',
+            dataType: 'json'
+        };
+
+        var loadMoreFun = function(data) {
+            $('#loadMore').hide();
+            $('#showChart').show();
+            if (data.length) {
+                pageNo++;
+                $('.search-result').show();
+                $.each(data, function(index, value) {
+                    var str = '<tr><td class="mdl-data-table__cell--non-numeric">',
+                        updateTime = new Date(value.UpdateTime);
+                    updateTime = timeFormat(updateTime, true).slice(5);
+                    str += updateTime + '</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerHumidity + '％</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterHumidity + '％</td></tr>'
+                    $('#searchTbody').append(str);
+                });
+                document.getElementsByTagName('body')[0].addEventListener('touchstart', touchHandler);
+                document.getElementsByTagName('body')[0].addEventListener('touchmove', touchHandler);
+                document.getElementsByTagName('body')[0].addEventListener('touchend', touchHandler);
+            } else {
+                $('#noMore').css('visibility', 'visible');
+            }
+        }
+
+        console.log('http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pagesize=5000');
+
+        $.ajax(settings).done(loadMoreFun);
+        var historyChart = echarts.init(document.getElementById('historyChart'));
+        historyChart.showLoading();
+
+        var settingsPic = {
+            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pagesize=5000',
+            type: 'GET',
+            dataType: 'json'
+        };
+        $.ajax(settingsPic).done(function(data) {
+            historyChart.hideLoading();
+            var innerTData = data.map(function(item) {
+                return item.InnerTemp;
+            });
+            var innerHData = data.map(function(item) {
+                return item.InnerHumidity;
+            });
+            var outterTData = data.map(function(item) {
+                return item.OutterTemp;
+            });
+            var outterHData = data.map(function(item) {
+                return item.OutterHumidity;
+            });
+
+            var innerTDataCalc = calcData(innerTData);
+            var innerHDataCalc = calcData(innerHData);
+            var outterTDataCalc = calcData(outterTData);
+            var outterHDataCalc = calcData(outterHData);
+
+            var option1 = {
+                grid: {
+                    bottom: 80
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        return params[0].name + '<br/>' + params[0].seriesName + ' : ' + params[0].value + ' (℃)<br/>' + params[1].seriesName + ' : ' + params[1].value + ' (℃)</br>' + params[2].seriesName + ' : ' + params[2].value + ' (％)<br/>' + params[3].seriesName + ' : ' + params[3].value + ' (％)';
+                    },
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                legend: {
+                    show: true,
+                    data: ['内部温度', '外部温度', '内部湿度', '外部湿度'],
+                    x: 'left'
+                },
+                dataZoom: [{
+                    show: true,
+                    handleSize: 40,
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }],
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {
+                        onZero: false
+                    },
+                    data: data.map(function(item) {
+                        return item.UpdateTime.slice(5).replace('T', '\n')
+                    })
+                }],
+                yAxis: [{
+                    name: '温度(℃)',
+                    type: 'value',
+                    min: -20,
+                    max: 50
+                }, {
+                    name: '湿度(％)',
+                    type: 'value'
+                }],
+                series: [{
+                    name: '内部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerTData
+                }, {
+                    name: '外部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterTData
+                }, {
+                    name: '内部湿度',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerHData
+                }, {
+                    name: '外部湿度',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterHData
+                }],
+                color: ['#f6ac49', '#eb5606', '#83ccd2', '#2892c4']
+            };
+            var option2 = {
+                grid: {
+                    bottom: 80
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        return params[0].name + '<br/>' + params[0].seriesName + ' : ' + params[0].value + ' (℃)<br/>' + params[1].seriesName + ' : ' + params[1].value + ' (℃)</br>' + params[2].seriesName + ' : ' + params[2].value + ' (％)<br/>' + params[3].seriesName + ' : ' + params[3].value + ' (％)';
+                    },
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                legend: {
+                    show: true,
+                    data: ['内部温度', '外部温度', '内部湿度', '外部湿度'],
+                    x: 'left'
+                },
+                dataZoom: [{
+                    show: true,
+                    handleSize: 40,
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }],
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {
+                        onZero: false
+                    },
+                    data: data.map(function(item) {
+                        return item.UpdateTime.slice(5).replace('T', '\n')
+                    })
+                }],
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    max: 100
+                },
+                series: [{
+                    name: '内部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerTDataCalc
+                }, {
+                    name: '外部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterTDataCalc
+                }, {
+                    name: '内部湿度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerHDataCalc
+                }, {
+                    name: '外部湿度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterHDataCalc
+                }],
+                color: ['#f6ac49', '#eb5606', '#83ccd2', '#2892c4']
+            };
+            historyChart.setOption(option1);
+            $('#chartNum').change(function() {
+                if ($(this).val() == 'chart2') {
+                    historyChart.setOption(option2);
+                } else {
+                    historyChart.setOption(option1);
+                }
+            })
+        });
+
+    });
+
+    function calcData(arr) {
+        var max = getArrayMax(arr);
+        var min = getArrayMin(arr);
+        if (min == max) {
+            return getEqualData(arr);
+        } else {
+            return getCalcData(min, max, arr);
+        }
+    }
+
+    function getArrayMax(arr) {
+        return Math.max.apply(Math, arr);
+    }
+
+    function getArrayMin(arr) {
+        return Math.min.apply(Math, arr);
+    }
+
+    function getEqualData(arr) {
+        var equalArr = [];
+        $.each(arr, function(e) {
+            equalArr.push(50);
+        });
+        return equalArr;
+    }
+
+    function getCalcData(min, max, arr) {
+        var calcArr = [];
+        $.each(arr, function(k, value) {
+            calcArr.push((value - min) / (max - min) * 100 * 0.8 + 0.1)
+        });
+        return calcArr;
+    }
+
+    //loadmore
+    var touchstart, touchmove, touchend;
+    if ('ontouchstart' in window) {
+        touchstart = 'touchstart';
+        touchmove = 'touchmove';
+        touchend = 'touchend';
+    } else {
+        touchstart = 'mousedown';
+        touchmove = 'mousemove';
+        touchend = 'mouseup';
+    }
+
+    var touchState, touchStartPos, touchmovePos;
+    var getTouchPos = function(e) {
+        var touches = e.touches;
+        if (touches && touches[0]) {
+            return {
+                x: touches[0].clientX,
+                y: touches[0].clientY
+            };
+        }
+        return {
+            x: e.clientX,
+            y: e.clientY
+        };
+    };
+
+    var touchScroll = function() {
+        if (touchmovePos) {
+            var moveDis = touchmovePos.y - touchStartPos.y,
+                $more = $('#loadMore');
+
+            if (moveDis < 0 && Math.abs(moveDis) > viewHeight / 5 && $more.attr('data-state') == 'true') {
+                $more.css('visibility', 'visible').attr('data-state', 'false');
+                var settings = {
+                    url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pageNo=' + pageNo + '&pageSize=5',
+                    type: 'GET',
+                    dataType: 'json'
+                }
+                pageNo++;
+                $.ajax(settings).done(function(data) {
+                    $more.css('visibility', 'hidden');
+                    if (data.length) {
+                        $.each(data, function(index, value) {
+                            var str = '<tr><td class="mdl-data-table__cell--non-numeric">',
+                                updateTime = new Date(value.UpdateTime);
+                            updateTime = timeFormat(updateTime, true).slice(5);
+                            str += updateTime + '</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerHumidity + '％</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterHumidity + '％</td></tr>';
+                            $('#searchTbody').append(str);
+                        });
+                    } else {
+                        $('#noMore').css('visibility', 'visible');
+                        document.getElementsByTagName('body')[0].removeEventListener('touchstart', touchHandler);
+                        document.getElementsByTagName('body')[0].removeEventListener('touchmove', touchHandler);
+                        document.getElementsByTagName('body')[0].removeEventListener('touchend', touchHandler);
+                    }
+                }).done(function() {
+                    $more.attr('data-state', 'true');
+                });
+            }
+        }
+    };
+    var touchHandler = function(e) {
+        var type = e.type;
+        switch (type) {
+            case 'touchstart':
+                touchState = 'TS';
+                touchStartPos = getTouchPos(e);
+                break;
+            case 'touchmove':
+                touchState = 'TM';
+                touchmovePos = getTouchPos(e);
+                touchScroll();
+                break;
+            case 'touchend':
+                touchState = 'TE';
+                touchScroll();
+                break;
+        }
+    }
+
+    // var mouseHandler = function(e){
+    //     var e = e || window.target;
+    // }
+
+    $('main').scroll(function() {
+        if ($(this).scrollTop() + $(this).get(0).clientHeight >= ($(this).get(0).scrollHeight - $('#loadmore').height()) / 4 * 3) {
+            var settings = {
+                url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pageNo=' + pageNo + '&pageSize=5',
+                type: 'GET',
+                dataType: 'json'
+            }
+            pageNo++;
+            $.ajax(settings).done(function(data) {
+                $('#loadMore').css('visibility', 'hidden');
+                if (data.length) {
+                    $.each(data, function(index, value) {
+                        var str = '<tr><td class="mdl-data-table__cell--non-numeric">',
+                            updateTime = new Date(value.UpdateTime);
+                        updateTime = timeFormat(updateTime, true).slice(5);
+                        str += updateTime + '</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerHumidity + '％</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterHumidity + '％</td></tr>';
+                        $('#searchTbody').append(str);
+                    });
+                } else {
+                    $('#noMore').show();
+                }
+            }).done(function() {
+                $('#loadMore').attr('data-state', 'true');
+            });
+        }
+
+    })
+
+    $('#showChart').on('click', function() {
+        $(this).hide();
+        $('#historyList').hide();
+        $('#historyChart').show();
+        $('.change-chart-btn').show();
+        $('#showTable').show();
+        document.getElementsByTagName('body')[0].removeEventListener('touchstart', touchHandler);
+        document.getElementsByTagName('body')[0].removeEventListener('touchmove', touchHandler);
+        document.getElementsByTagName('body')[0].removeEventListener('touchend', touchHandler);
+    });
+    $('#showTable').on('click', function() {
+        $(this).hide();
+        $('#showChart').hide();
+        $('#historyChart').hide();
+        $('.change-chart-btn').hide();
+        $('#historyList').show();
+        $('#showChart').show();
+        document.getElementsByTagName('body')[0].addEventListener('touchstart', touchHandler);
+        document.getElementsByTagName('body')[0].addEventListener('touchmove', touchHandler);
+        document.getElementsByTagName('body')[0].addEventListener('touchend', touchHandler);
+    });
+    </script>
+</body>
+
+</html>

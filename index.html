@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <title>环网箱监控</title>
+    <link rel="stylesheet" href="Static/css/base.css" />
+    <link rel="stylesheet" href="static/css/style-reset.css" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="login-page">
+            <div class="login-form">
+                <form id="loginForm" method="get" action="#">
+                    <div class="login-input-group">
+                        <label for="id">UserName</label>
+                        <input type="text" id="id" name="id" placeholder="Username" />
+                    </div>
+                    <div class="login-line"></div>
+                    <div class="login-input-group">
+                        <label for="pwd">Password</label>
+                        <input type="password" id="pwd" name="pwd" placeholder="Password" />
+                    </div>
+                    <div class="login-line"></div>
+                    <input type="hidden" name="opt" value="1">
+                    <div class="login-btn">
+                        <button id="loginBtn">登录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="Scripts/jquery-2.2.1.min.js"></script>
+<script>
+$('#loginBtn').click(function() {
+    // var settings = {
+    //     async: true,
+    //     crossDomain: true,
+    //     url: 'http://boxapi.losta.net/apiv1/auth/login?id=' + $('id').val() + '&pwd=' + $('pwd').val() + '&opt=1',
+    //     method: 'GET'
+    // }
+    // $.ajax(settings).done(function(data) {
+    //     if (data.length) {
+    //         $('#loginForm').attr('action', 'Datum/list.html').submit();
+    //     } else {
+    //         alert('没有这个？')
+    //     }
+    //     alert(data)
+    // });
+    $('#loginForm').attr('action', 'Datum/list.html').submit();
+});
+</script>
+
+</html>

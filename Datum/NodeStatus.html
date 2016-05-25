@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <title>环网箱监控</title>
+    <link rel="stylesheet" type="text/css" href="../Content/mdl-v1.1.2/material.min.css">
+    <link rel="stylesheet" href="../Static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="../Static/css/style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <div id="back" class="material-icons md-36 back-icon" style="visibility: hidden;" data-state="0">navigate_before</div>
+                    <h1 class="mdl-layout__title" id="title">实时状态</h1>
+                    <div class="mdl-layout-spacer"></div>
+                    <div class="mdl-navigation">
+                        <a class="material-icons mdl-badge mdl-badge--overlap" id="warning" href="Warninfo.html">notifications</a>
+                    </div>
+                </div>
+            </header>
+            <main class="mdl-layout__content" data-state="false">
+                <div class="content" id="scrollable">
+                    <div class="loading">
+                        <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                    </div>
+                    <div class="equipment-list" id="pageMain">
+                        <div class="mdl-list box-line">
+                            <div class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">内部温度</span>
+                                <span class="mdl-list__item-secondary-content" id="i-temp"></span>
+                            </div>
+                            <div class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">内部湿度</span>
+                                <span class="mdl-list__item-secondary-content" id="i-humidity"></span>
+                            </div>
+                            <div class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">外部温度</span>
+                                <span class="mdl-list__item-secondary-content" id="o-temp"></span>
+                            </div>
+                            <div class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">外部湿度</span>
+                                <span class="mdl-list__item-secondary-content" id="o-humidity"></span>
+                            </div>
+                            <div id="fanState"></div>
+                            <a class="mdl-list__item current-page" href="#chart">
+                                <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">insert_chart</i>图表</span>
+                                <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                            </a>
+                            <div class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">access_time</i>更新时间</span>
+                                <span class="mdl-list__item-secondary-content" id="updateTime"></span>
+                            </div>
+                            <div class="mdl-list__item mdl-list__item-line"></div>
+                            <a class="mdl-list__item" id="history" href="#">
+                                <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">history</i>历史数据</span>
+                                <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                            </a>
+                            <div class="mdl-list__item mdl-list__item-line"></div>
+                            <a class="mdl-list__item current-page" href="#communication">
+                                <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">call</i>通讯方式</span>
+                                <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                            </a>
+                            <a class="mdl-list__item current-page" href="#settings">
+                                <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">settings</i>设置参数</span>
+                                <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="chart">
+                    <div id="hChart" style="width:100%;height:100%;"></div>
+                </div>
+                <div class="equipment-panel" id="communication">
+                    <div class="mdl-list box-line">
+                        <div class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">短信中心</span>
+                            <span class="mdl-list__item-secondary-content">xxxxxxx</span>
+                        </div>
+                        <div class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">设备IP</span>
+                            <span class="mdl-list__item-secondary-content" id="ip"></span>
+                        </div>
+                        <div class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">设备手机号</span>
+                            <span class="mdl-list__item-secondary-content">xxxxxxxx</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="settings">
+                    <div class="demo-list-two mdl-list box-line box-line-two">
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify0">
+                            <span class="mdl-list__item-primary-content">
+                                <span>低温关闭门限(℃)</span>
+                            <span class="mdl-list__item-sub-title">
+                                    <i>下限: 1111</i>
+                                    <i>上限: 1111</i>
+                                </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify1">
+                            <span class="mdl-list__item-primary-content">
+                                <span>高温关闭门限(℃)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                                <i>上限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify2">
+                            <span class="mdl-list__item-primary-content">
+                                <span>高湿关闭门限(％)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                                <i>上限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify3">
+                            <span class="mdl-list__item-primary-content">
+                                <span>转速控制门限(％)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                                <i>上限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify4">
+                            <span class="mdl-list__item-primary-content">
+                                <span>低温关闭门限(℃)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                                <i>上限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify5">
+                            <span class="mdl-list__item-primary-content">
+                                <span>低湿关闭门限(％)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                                <i>上限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify6">
+                            <span class="mdl-list__item-primary-content">
+                                <span>间歇运行门限(℃)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                                <i>上限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify7">
+                            <span class="mdl-list__item-primary-content">
+                                <span>间歇运行启动时间(分)(范围:0-240)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify8">
+                            <span class="mdl-list__item-primary-content">
+                                <span>间歇运行停止时间(分)(范围:0-240)</span>
+                            <span class="mdl-list__item-sub-title">
+                                <i>下限: 1111</i>
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item" href="#modify9">
+                            <span class="mdl-list__item-primary-content">
+                                <span class="mdl-list__item-primary-content">温度报警值(℃)</span>
+                            <span class="mdl-list__item-secondary-content">11111</span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item" href="#modify10">
+                            <span class="mdl-list__item-primary-content">
+                                <span class="mdl-list__item-primary-content">湿度报警值(℃)</span>
+                            <span class="mdl-list__item-secondary-content">11111</span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                        <a class="mdl-list__item" href="#modify11">
+                            <span class="mdl-list__item-primary-content">
+                                <span class="mdl-list__item-primary-content">报警中心号码</span>
+                            <span class="mdl-list__item-secondary-content">11111</span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify0">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify1">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify2">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify3">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify4">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify5">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify6">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">下限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify7">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify8">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify9">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify10">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+                <div class="equipment-panel" id="modify11">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                        <label class="mdl-textfield__label" for="sample2">上限</label>
+                        <span class="mdl-textfield__error">Input is not a number!</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="../Scripts/jquery-2.2.1.min.js"></script>
+    <script src="../Content/mdl-v1.1.2/material.min.js"></script>
+    <script src="../Scripts/echarts.common.min.js"></script>
+    <script>
+    var reg = new RegExp('(^|&)id=([^&]*)(&|$)');
+    var r = window.location.search.substr(1).match(reg) ? window.location.search.substr(1).match(reg)[2] : '00000010';
+
+    $('#history').attr('href', 'NodeHistory.html?id=' + r);
+    var settings = {
+        url: 'http://boxapi.losta.net/apiv1/datum/nodeStatus/' + r,
+        type: 'GET',
+        dataType: 'json'
+    };
+
+    var viewWidth = document.documentElement.clientWidth,
+        viewHeight = document.documentElement.clientHeight;
+    // $('#scrollable').height(document.getElementById('scrollable').scrollHeight)
+    console.log($('#scrollable').height())
+    console.log(document.getElementById('scrollable').offsetHeight)
+    console.log(document.getElementById('scrollable').scrollHeight)
+
+    var doAjax = function(data) {
+        if (data.length) {
+            $('#warning').attr('href', 'WarnInfo.html?id=' + r);
+            $('#i-temp').html(data[0].InnerTemp + '℃');
+            $('#i-humidity').html(data[0].InnerHumidity + '％');
+            $('#o-temp').html(data[0].OutterTemp + '℃');
+            $('#o-humidity').html(data[0].OutterHumidity + '％');
+            $('#updateTime').html(data[0].UpdateTime.replace('T', ' ').replace('Z', ''))
+            var str = '';
+            var state;
+            for (var i = 0, arr = data[0].FanSpeedList, len = arr.length; i < len; i++) {
+                switch (arr[i]) {
+                    case 0:
+                        state = 'red';
+                        break;
+                    case 1:
+                        state = 'orange';
+                        break;
+                    case 2:
+                        state = 'green';
+                        break;
+                }
+                str += '<div class="mdl-list__item">' + '<span class="mdl-list__item-primary-content">风扇' + (i + 1) + '号</span>' + '<span class="mdl-list__item-secondary-content"><i class="material-icons ' + state + '">toys</i></span>' + '</div>';
+            }
+            $('#fanState').html(str);
+            $('#ip').html(data[0].NodeEndPoint);
+            $('#scrollable').attr('data-state', 'true')
+        }
+
+    };
+    $.ajax(settings).done(doAjax);
+
+    $('.mdl-layout__content').height(viewHeight - $('.mdl-layout__header').height());
+
+    $('.mdl-tabs-panel-lg').height(viewHeight - $('.mdl-layout__header').height() - $('.mdl-tabs__tab-bar').height());
+
+    var prefix = (function(temp) {
+        var aPrefix = ['webkit', 'moz', 'o', 'ms'],
+            props = '';
+        for (var i in aPrefix) {
+            props = aPrefix[i] + 'Transition';
+            if (temp.style[props] !== undefined) {
+                return '-' + aPrefix[i].toLowerCase() + '-';
+            }
+        }
+    })(document.createElement('div'));
+
+    //scrollable
+    var touchstart, touchmove, touchend;
+    if ('ontouchstart' in window) {
+        touchstart = 'touchstart';
+        touchmove = 'touchmove';
+        touchend = 'touchend';
+    } else {
+        touchstart = 'mousedown';
+        touchmove = 'mousemove';
+        touchend = 'mouseup';
+    }
+
+    var touchState, touchStartPos, touchmovePos;
+    var getTouchPos = function(e) {
+        var touches = e.touches;
+        if (touches && touches[0]) {
+            return {
+                x: touches[0].clientX,
+                y: touches[0].clientY
+            };
+        }
+        return {
+            x: e.clientX,
+            y: e.clientY
+        };
+    };
+    var touchScroll = function(e) {
+        if (touchmovePos) {
+            var moveDis = touchmovePos.y - touchStartPos.y,
+                scrollH = document.getElementById('scrollable').scrollHeight,
+                clientH = document.getElementById('scrollable').clientHeight,
+                scrollT = document.getElementById('pageMain').scrollTop,
+                $scrollable = $('#scrollable');
+            if (moveDis > viewHeight / 3 && scrollT == 0) {
+                $scrollable.css({
+                    '-webkit-animation': 'refreshOut 200ms 1 linear',
+                    'animation-fill-mode': 'forwards'
+                });
+                $.ajax(settings).done(doAjax);
+                var scrollableFun = function() {
+                    if ($scrollable.attr('data-state') == 'true' && touchState == 'TE') {
+                        $scrollable.css({
+                            '-webkit-animation': 'refreshIn 200ms 1 linear',
+                            'animation-fill-mode': 'forwards'
+                        });
+                        touchstartPos = null;
+                        touchmovePos = null;
+                        clearInterval(scrollableFun);
+                    }
+                };
+                setInterval(scrollableFun, 20);
+            }
+            if (moveDis > 0 && moveDis < viewHeight / 3 && scrollT == 0 || moveDis < 0 && scrollH == (scrollT + clientH + 1)) {
+                e.preventDefault();
+            }
+        }
+    };
+    var touchHandler = function(e) {
+        // var type = e.type;
+        // switch (type) {
+        //     case 'touchstart':
+        //         touchState = 'TS';
+        //         touchStartPos = getTouchPos(e);
+        //         break;
+        //     case 'touchmove':
+        //         touchState = 'TM';
+        //         touchmovePos = getTouchPos(e);
+        //         touchScroll(e);
+        //         break;
+        //     case 'touchend':
+        //         touchState = 'TE';
+        //         touchScroll(e);
+        //         break;
+        // }
+    }
+    document.getElementById('scrollable').addEventListener('touchstart', touchHandler);
+    document.getElementById('scrollable').addEventListener('touchmove', touchHandler);
+    document.getElementById('scrollable').addEventListener('touchend', touchHandler);
+
+    var $main = $('#scrollable'),
+        $panel,
+        $modify;
+
+    var transition = prefix + 'transition';
+    var transitionText = 'all 300ms ease';
+    var transform = prefix + 'transform';
+    var translateShow = 'translateX(-' + viewWidth + 'px)';
+    var translateHide = 'translateX(0)';
+    var translateShowSec = 'translateX(-' + viewWidth * 2 + 'px)';
+    $('.equipment-panel').css('left', viewWidth + 'px').show();
+    $main.find('a.current-page').on('click', function(e) {
+        e.preventDefault();
+        $panel = $($(this).attr('href'));
+        $main.css(transition, transitionText).css(transform, translateShow);
+        $panel.css(transition, transitionText).css(transform, translateShow);
+        $('#back').css('visibility', 'visible').attr('data-state', 1);
+    });
+    $('#settings a').on('click', function(e) {
+        e.preventDefault();
+        $modify = $($(this).attr('href'));
+        $panel.css(transition, transitionText).css(transform, translateShowSec);
+        $modify.css(transition, transitionText).css(transform, translateShow);
+        $('#back').attr('data-state', 2);
+    });
+
+    $('#back.back-icon').on('click', function(e) {
+        var state = $(this).attr('data-state');
+        if (state == '1') {
+            $main.css(transition, transitionText).css(transform, translateHide);
+            $panel.css(transition, transitionText).css(transform, translateHide);
+            $('#back').attr('data-state', 0).css('visibility', 'hidden');
+        } else if (state == '2') {
+            $panel.css(transition, transitionText).css(transform, translateShow);
+            $modify.css(transition, transitionText).css(transform, translateHide);
+            $('#back').attr('data-state', 1);
+        }
+    });
+
+    var hChart = echarts.init(document.getElementById('hChart'));
+    hChart.showLoading();
+    $.get('http://boxapi.losta.net/apiv1/datum/history/' + r, function(data) {
+        hChart.hideLoading();
+
+        var settingsPic = {
+            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pagesize=5000',
+            type: 'GET',
+            dataType: 'json'
+        };
+        $.ajax(settingsPic).done(function(data) {
+            historyChart.hideLoading();
+            var innerTData = data.map(function(item) {
+                return item.InnerTemp;
+            });
+            var innerHData = data.map(function(item) {
+                return item.InnerHumidity;
+            });
+            var outterTData = data.map(function(item) {
+                return item.OutterTemp;
+            });
+            var outterHData = data.map(function(item) {
+                return item.OutterHumidity;
+            });
+
+            var innerTDataCalc = calcData(innerTData);
+            var innerHDataCalc = calcData(innerHData);
+            var outterTDataCalc = calcData(outterTData);
+            var outterHDataCalc = calcData(outterHData);
+
+            var option1 = {
+                grid: {
+                    bottom: 80
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        return params[0].name + '<br/>' + params[0].seriesName + ' : ' + params[0].value + ' (℃)<br/>' + params[1].seriesName + ' : ' + params[1].value + ' (℃)</br>' + params[2].seriesName + ' : ' + params[2].value + ' (％)<br/>' + params[3].seriesName + ' : ' + params[3].value + ' (％)';
+                    },
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                legend: {
+                    show: true,
+                    data: ['内部温度', '外部温度', '内部湿度', '外部湿度'],
+                    x: 'left'
+                },
+                dataZoom: [{
+                    show: true,
+                    handleSize: 40,
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }],
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {
+                        onZero: false
+                    },
+                    data: data.map(function(item) {
+                        return item.UpdateTime.slice(5).replace('T', '\n')
+                    })
+                }],
+                yAxis: [{
+                    name: '温度(℃)',
+                    type: 'value',
+                    min: -20,
+                    max: 50
+                }, {
+                    name: '湿度(％)',
+                    type: 'value'
+                }],
+                series: [{
+                    name: '内部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerTData
+                }, {
+                    name: '外部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterTData
+                }, {
+                    name: '内部湿度',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerHData
+                }, {
+                    name: '外部湿度',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterHData
+                }],
+                color: ['#f6ac49', '#eb5606', '#83ccd2', '#2892c4']
+            };
+            var option2 = {
+                grid: {
+                    bottom: 80
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        return params[0].name + '<br/>' + params[0].seriesName + ' : ' + params[0].value + ' (℃)<br/>' + params[1].seriesName + ' : ' + params[1].value + ' (℃)</br>' + params[2].seriesName + ' : ' + params[2].value + ' (％)<br/>' + params[3].seriesName + ' : ' + params[3].value + ' (％)';
+                    },
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                legend: {
+                    show: true,
+                    data: ['内部温度', '外部温度', '内部湿度', '外部湿度'],
+                    x: 'left'
+                },
+                dataZoom: [{
+                    show: true,
+                    handleSize: 40,
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 0,
+                    end: 100
+                }],
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {
+                        onZero: false
+                    },
+                    data: data.map(function(item) {
+                        return item.UpdateTime.slice(5).replace('T', '\n')
+                    })
+                }],
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    max: 100
+                },
+                series: [{
+                    name: '内部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerTDataCalc
+                }, {
+                    name: '外部温度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterTDataCalc
+                }, {
+                    name: '内部湿度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: innerHDataCalc
+                }, {
+                    name: '外部湿度',
+                    type: 'line',
+                    hoverAnimation: false,
+                    symbolSize: 6,
+                    itemStyle: {
+                        normal: {}
+                    },
+                    showSymbol: false,
+                    data: outterHDataCalc
+                }],
+                color: ['#f6ac49', '#eb5606', '#83ccd2', '#2892c4']
+            };
+            historyChart.setOption(option1);
+            $('#chartNum').change(function() {
+                if ($(this).val() == 'chart2') {
+                    historyChart.setOption(option2);
+                } else {
+                    historyChart.setOption(option1);
+                }
+            })
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <META HTTP-EQUIV="expires" CONTENT="0">
+    <title>环网箱监控</title>
+    <link rel="stylesheet" type="text/css" href="../Content/mdl-v1.1.2/material.min.css">
+    <link rel="stylesheet" href="../Static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="../Static/css/style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <div id="back" class="material-icons md-36 back-icon" style="visibility: hidden;" data-state="0">navigate_before</div>
+                    <h1 class="mdl-layout__title" id="title">环网柜列表</h1>
+                    <div class="mdl-layout-spacer"></div>
+                    <div class="mdl-navigation" style="visibility: hidden;">
+                        <a class="material-icons mdl-badge mdl-badge--overlap" id="warning" href="Warninfo.html">notifications</a>
+                    </div>
+                </div>
+            </header>
+            <main class="mdl-layout__content">
+                <div class="equipment-list" id="pageMain">
+                    <div class="mdl-list box-line" id="list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="../Scripts/jquery-2.2.1.min.js"></script>
+    <script src="../Content/mdl-v1.1.2/material.min.js"></script>
+    <script>
+    var prefix = (function(temp) {
+        var aPrefix = ['webkit', 'moz', 'o', 'ms'],
+            props = '';
+        for (var i in aPrefix) {
+            props = aPrefix[i] + 'Transition';
+            if (temp.style[props] !== undefined) {
+                return '-' + aPrefix[i].toLowerCase() + '-';
+            }
+        }
+    })(document.createElement('div'));
+
+    var viewWidth = document.documentElement.clientWidth,
+        viewHeight = document.documentElement.clientHeight;
+    var $main = $('#pageMain'),
+        $panel;
+
+    var transition = prefix + 'transition';
+    var transitionText = 'all 300ms ease';
+    var transform = prefix + 'transform';
+    var translateShow = 'translateX(-' + viewWidth + 'px)';
+    var translateHide = 'translateX(0)';
+    $('.equipment-panel').css('left', viewWidth + 'px').show();
+    var settings = {
+        url: 'http://boxapi.losta.net/apiv1/basis/substation',
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function(xmlHttp) {
+            xmlHttp.setRequestHeader('If-Modified-Since', '0');
+            xmlHttp.setRequestHeader('Cache-Control', 'no-cache');
+        }
+    };
+    $.ajax(settings).done(function(data) {
+        var str1 = '';
+        $.each(data, function(index, value) {
+            str1 += '<a class="mdl-list__item current-page" href="#panel' + index + '"><span class="material-icons" style="margin-right:20px;color:#54536f">devices</span><span class="mdl-list__item-primary-content">' + value.SubStationName + '</span><span class="mdl-list__item-secondary-content arrow-color"> <i class="material-icons">navigate_next</i></span></a>';
+            var settingsPanel = {
+                url: 'http://boxapi.losta.net/apiv1/basis/nodes/' + value.SubStationId,
+                type: 'GET',
+                dataType: 'json'
+            };
+            $.ajax(settingsPanel).done(function(data) {
+                var str2 = '<div class="equipment-panel" id="panel' + index + '" style="left:' + viewWidth + 'px;display:block"><div class="mdl-list box-line">';
+                $.each(data, function(index, value) {
+                    str2 += '<a class="mdl-list__item" href="NodeStatus.html?id=' + value.NodeId + '"><span class="material-icons" style="margin-right:20px;color:#54536f">star</span><span class="mdl-list__item-primary-content">' + value.NodeName + '</span><span class="mdl-list__item-secondary-content arrow-color"><i class="material-icons" >navigate_next</i></span></a>';
+                });
+                str2 += '</div></div>';
+                $('.mdl-layout__content').append(str2);
+            });
+        });
+        $('#list').html(str1);
+
+    });
+    $('a.current-page').on('click', function(e) {
+        e.preventDefault();
+        $panel = $($(this).attr('href'));
+        $main.css(transition, transitionText).css(transform, translateShow);
+        $panel.css(transition, transitionText).css(transform, translateShow);
+        $('#back').css('visibility', 'visible').attr('data-state', 1);
+    });
+    $main.on('click', 'a.current-page', function(e) {
+        e.preventDefault();
+        $panel = $($(this).attr('href'));
+        $main.css(transition, transitionText).css(transform, translateShow);
+        $panel.css(transition, transitionText).css(transform, translateShow);
+        $('#back').css('visibility', 'visible').attr('data-state', 1);
+    });
+    $('#back.back-icon').on('click', function(e) {
+        var state = $(this).attr('data-state');
+        if (state == '1') {
+            $main.css(transition, transitionText).css(transform, translateHide);
+            $panel.css(transition, transitionText).css(transform, translateHide);
+            $('#back').attr('data-state', 0).css('visibility', 'hidden');
+        } else if (state == '2') {
+            $panel.css(transition, transitionText).css(transform, translateShow);
+            $modify.css(transition, transitionText).css(transform, translateHide);
+            $('#back').attr('data-state', 1);
+        }
+    });
+    </script>
+</body>
+
+</html>

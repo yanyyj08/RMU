@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <title>环网箱监控</title>
+    <link rel="stylesheet" type="text/css" href="../Content/mdl-v1.1.2/material.min.css">
+    <link rel="stylesheet" href="../Static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="../Static/css/style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <div id="back" class="material-icons md-36 back-icon" style="visibility: hidden;" data-state="0">navigate_before</div>
+                    <h1 class="mdl-layout__title" id="title">环网柜列表</h1>
+                    <div class="mdl-layout-spacer"></div>
+                    <div class="mdl-navigation" style="visibility: hidden;">
+                        <a class="material-icons mdl-badge mdl-badge--overlap" id="warning" href="Warninfo.html">notifications</a>
+                    </div>
+                </div>
+            </header>
+            <main class="mdl-layout__content">
+                <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+                    <thead>
+                        <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Material</th>
+                            <th>Quantity</th>
+                            <th>Unit price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">Acrylic (Transparent)</td>
+                            <td>250</td>
+                            <td>$2.90</td>
+                        </tr>
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
+                            <td>50</td>
+                            <td>$1.25</td>
+                        </tr>
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
+                            <td>10</td>
+                            <td>$12.35</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+    <script src="../Scripts/jquery-2.2.1.min.js"></script>
+    <script src="../Content/mdl-v1.1.2/material.min.js"></script>
+</body>
+
+</html>
