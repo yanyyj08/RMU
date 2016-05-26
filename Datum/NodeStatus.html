@@ -24,11 +24,11 @@
                 </div>
             </header>
             <main class="mdl-layout__content" data-state="false">
-                <div class="content" id="scrollable">
+                <div class="content sections" id="scrollable">
                     <div class="loading">
                         <div class="mdl-spinner mdl-js-spinner is-active"></div>
                     </div>
-                    <div class="equipment-list" id="pageMain">
+                    <div class="equipment-list section-1" id="pageMain">
                         <div class="mdl-list box-line">
                             <div class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">内部温度</span>
@@ -47,7 +47,7 @@
                                 <span class="mdl-list__item-secondary-content" id="o-humidity"></span>
                             </div>
                             <div id="fanState"></div>
-                            <a class="mdl-list__item current-page" href="#chart">
+                            <a class="mdl-list__item current-page swipeBtn" href="javascript:;" data-href="#chart">
                                 <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">insert_chart</i>图表</span>
                                 <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                             </a>
@@ -61,21 +61,21 @@
                                 <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                             </a>
                             <div class="mdl-list__item mdl-list__item-line"></div>
-                            <a class="mdl-list__item current-page" href="#communication">
+                            <a class="mdl-list__item current-page swipeBtn" href="javascript:;" data-href="#communication">
                                 <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">call</i>通讯方式</span>
                                 <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                             </a>
-                            <a class="mdl-list__item current-page" href="#settings">
+                            <a class="mdl-list__item current-page swipeBtn" href="javascript:;" data-href="#settings">
                                 <span class="mdl-list__item-primary-content"><i class="material-icons blue mr8">settings</i>设置参数</span>
                                 <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="equipment-panel" id="chart">
+                <div class="equipment-panel section-2" id="chart">
                     <div id="hChart" style="width:100%;height:100%;"></div>
                 </div>
-                <div class="equipment-panel" id="communication">
+                <div class="equipment-panel section-2" id="communication">
                     <div class="mdl-list box-line">
                         <div class="mdl-list__item">
                             <span class="mdl-list__item-primary-content">短信中心</span>
@@ -91,9 +91,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="equipment-panel" id="settings">
+                <div class="equipment-panel section-2" id="settings">
                     <div class="demo-list-two mdl-list box-line box-line-two">
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify0">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify0">
                             <span class="mdl-list__item-primary-content">
                                 <span>低温关闭门限(℃)</span>
                             <span class="mdl-list__item-sub-title">
@@ -103,7 +103,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify1">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify1">
                             <span class="mdl-list__item-primary-content">
                                 <span>高温关闭门限(℃)</span>
                             <span class="mdl-list__item-sub-title">
@@ -113,7 +113,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify2">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify2">
                             <span class="mdl-list__item-primary-content">
                                 <span>高湿关闭门限(％)</span>
                             <span class="mdl-list__item-sub-title">
@@ -123,7 +123,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify3">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify3">
                             <span class="mdl-list__item-primary-content">
                                 <span>转速控制门限(％)</span>
                             <span class="mdl-list__item-sub-title">
@@ -133,7 +133,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify4">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify4">
                             <span class="mdl-list__item-primary-content">
                                 <span>低温关闭门限(℃)</span>
                             <span class="mdl-list__item-sub-title">
@@ -143,7 +143,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify5">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify5">
                             <span class="mdl-list__item-primary-content">
                                 <span>低湿关闭门限(％)</span>
                             <span class="mdl-list__item-sub-title">
@@ -153,7 +153,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify6">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify6">
                             <span class="mdl-list__item-primary-content">
                                 <span>间歇运行门限(℃)</span>
                             <span class="mdl-list__item-sub-title">
@@ -163,7 +163,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify7">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify7">
                             <span class="mdl-list__item-primary-content">
                                 <span>间歇运行启动时间(分)(范围:0-240)</span>
                             <span class="mdl-list__item-sub-title">
@@ -172,7 +172,7 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item mdl-list__item--two-line" href="#modify8">
+                        <a class="mdl-list__item mdl-list__item--two-line swipeBtn" href="javascript:;" data-href="#modify8">
                             <span class="mdl-list__item-primary-content">
                                 <span>间歇运行停止时间(分)(范围:0-240)</span>
                             <span class="mdl-list__item-sub-title">
@@ -181,21 +181,21 @@
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item" href="#modify9">
+                        <a class="mdl-list__item swipeBtn" href="javascript:;" data-href="#modify9">
                             <span class="mdl-list__item-primary-content">
                                 <span class="mdl-list__item-primary-content">温度报警值(℃)</span>
                             <span class="mdl-list__item-secondary-content">11111</span>
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item" href="#modify10">
+                        <a class="mdl-list__item swipeBtn" href="javascript:;" data-href="#modify10">
                             <span class="mdl-list__item-primary-content">
                                 <span class="mdl-list__item-primary-content">湿度报警值(℃)</span>
                             <span class="mdl-list__item-secondary-content">11111</span>
                             </span>
                             <span class="mdl-list__item-secondary-content"><i class="material-icons">navigate_next</i></span>
                         </a>
-                        <a class="mdl-list__item" href="#modify11">
+                        <a class="mdl-list__item swipeBtn" href="javascript:;" data-href="#modify11">
                             <span class="mdl-list__item-primary-content">
                                 <span class="mdl-list__item-primary-content">报警中心号码</span>
                             <span class="mdl-list__item-secondary-content">11111</span>
@@ -204,7 +204,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify0">
+                <div class="equipment-panel section-2" id="modify0">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -216,7 +216,7 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify1">
+                <div class="equipment-panel section-2" id="modify1">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -228,7 +228,7 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify2">
+                <div class="equipment-panel section-2" id="modify2">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -240,7 +240,7 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify3">
+                <div class="equipment-panel section-2" id="modify3">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -252,7 +252,7 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify4">
+                <div class="equipment-panel section-2" id="modify4">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -264,7 +264,7 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify5">
+                <div class="equipment-panel section-2" id="modify5">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -276,7 +276,7 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify6">
+                <div class="equipment-panel section-2" id="modify6">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -288,35 +288,35 @@
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify7">
+                <div class="equipment-panel section-2" id="modify7">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify8">
+                <div class="equipment-panel section-2" id="modify8">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify9">
+                <div class="equipment-panel section-2" id="modify9">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify10">
+                <div class="equipment-panel section-2" id="modify10">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
                         <span class="mdl-textfield__error">Input is not a number!</span>
                     </div>
                 </div>
-                <div class="equipment-panel" id="modify11">
+                <div class="equipment-panel section-2" id="modify11">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
                         <label class="mdl-textfield__label" for="sample2">上限</label>
@@ -327,6 +327,7 @@
         </div>
     </div>
     <script src="../Scripts/jquery-2.2.1.min.js"></script>
+    <script src="../Static/js/jquery-slide.js"></script>
     <script src="../Content/mdl-v1.1.2/material.min.js"></script>
     <script src="../Scripts/echarts.common.min.js"></script>
     <script>
@@ -477,40 +478,9 @@
         $panel,
         $modify;
 
-    var transition = prefix + 'transition';
-    var transitionText = 'all 300ms ease';
-    var transform = prefix + 'transform';
-    var translateShow = 'translateX(-' + viewWidth + 'px)';
-    var translateHide = 'translateX(0)';
-    var translateShowSec = 'translateX(-' + viewWidth * 2 + 'px)';
-    $('.equipment-panel').css('left', viewWidth + 'px').show();
-    $main.find('a.current-page').on('click', function(e) {
-        e.preventDefault();
-        $panel = $($(this).attr('href'));
-        $main.css(transition, transitionText).css(transform, translateShow);
-        $panel.css(transition, transitionText).css(transform, translateShow);
-        $('#back').css('visibility', 'visible').attr('data-state', 1);
-    });
-    $('#settings a').on('click', function(e) {
-        e.preventDefault();
-        $modify = $($(this).attr('href'));
-        $panel.css(transition, transitionText).css(transform, translateShowSec);
-        $modify.css(transition, transitionText).css(transform, translateShow);
-        $('#back').attr('data-state', 2);
-    });
-
-    $('#back.back-icon').on('click', function(e) {
-        var state = $(this).attr('data-state');
-        if (state == '1') {
-            $main.css(transition, transitionText).css(transform, translateHide);
-            $panel.css(transition, transitionText).css(transform, translateHide);
-            $('#back').attr('data-state', 0).css('visibility', 'hidden');
-        } else if (state == '2') {
-            $panel.css(transition, transitionText).css(transform, translateShow);
-            $modify.css(transition, transitionText).css(transform, translateHide);
-            $('#back').attr('data-state', 1);
-        }
-    });
+    $('.wrapper').PageSwipe({
+        level: 2
+    })
 
     var hChart = echarts.init(document.getElementById('hChart'));
     hChart.showLoading();
@@ -518,12 +488,12 @@
         hChart.hideLoading();
 
         var settingsPic = {
-            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pagesize=5000',
+            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + '?pagesize=5000',
             type: 'GET',
             dataType: 'json'
         };
         $.ajax(settingsPic).done(function(data) {
-            historyChart.hideLoading();
+            hChart.hideLoading();
             var innerTData = data.map(function(item) {
                 return item.InnerTemp;
             });
@@ -724,12 +694,12 @@
                 }],
                 color: ['#f6ac49', '#eb5606', '#83ccd2', '#2892c4']
             };
-            historyChart.setOption(option1);
+            hChart.setOption(option1);
             $('#chartNum').change(function() {
                 if ($(this).val() == 'chart2') {
-                    historyChart.setOption(option2);
+                    hChart.setOption(option2);
                 } else {
-                    historyChart.setOption(option1);
+                    hChart.setOption(option1);
                 }
             })
         });
