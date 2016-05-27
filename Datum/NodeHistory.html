@@ -96,6 +96,9 @@
     <script src="../Static/js/iscroll.js"></script>
     <script src="../Static/js/common.js"></script>
     <script>
+    var reg = new RegExp('(^|&)id=([^&]*)(&|$)');
+    var r = window.location.search.substr(1).match(reg) ?
+        window.location.search.substr(1).match(reg)[2] : '00000010';
     // window.onbeforeunload = function() {
     //     var n = window.event.screenX - window.screenLeft;
     //     var b = n > document.documentElement.scrollWidth - 20;
@@ -106,249 +109,36 @@
     //         alert("是刷新而非关闭");
     //     }
     // }
-    $('#beginTime').date();
+    $(function() {
+        (function() {
+            $('#beginTime').date();
+            var today = timeFormat(new Date(), false);
+            $('#beginTime').val(today).attr('placeholder', today);
+        })();
 
-    var today = timeFormat(new Date(), false);
-    $('#beginTime').val(today).attr('placeholder', today);
-
-    var reg = new RegExp('(^|&)id=([^&]*)(&|$)');
-    var r = window.location.search.substr(1).match(reg) ? window.location.search.substr(1).match(reg)[2] : '00000010';
-    var viewWidth = document.documentElement.clientWidth,
-        viewHeight = document.documentElement.clientHeight;
-
-    var wrapperWidth = $('.wrapper').width();
-    $('#historyChart').css({
-        'width': wrapperWidth + 'px',
-        'height': viewHeight - 150 + 'px'
-    })
-
-    $('#queryTime').focus(function() {
-        $(this).parent().css('padding', '0 0 20px');
-    }).blur(function() {
-        if ($(this).siblings('.mdl-textfield__error').css('visibility') == 'hidden') {
-            $(this).parent().css('padding', '0');
-        }
-    });
-
-    $('.search-select').click(function(e) {
-        e.preventDefault();
-    })
-
-    var pageNo = 1,
-        timeStr = '?';
-    $('#search').on('click', function() {
-        $('#showTable').hide();
-        $('#historyChart').hide();
-        $('.change-chart-btn').hide();
-        $('#historyList').show();
-        $('#searchTbody').html('');
-        $('#loadMore').show();
-        $('#noMore').hide();
-        var startTime = $('#beginTime').val(),
-            // period = $('#period input[name="options"]:checked').val(),
-            period = $('#period').val(),
-            endTime;
-        pageNo = 1;
-        timeStr = '?';
-        if (startTime) {
-            // startTime = startTime.split('');
-            // startTime.splice(6, 0, '-');
-            // startTime.splice(4, 0, '-');
-            endTime = new Date(startTime.replace(/-/g, "/"))
-            startTime = new Date(startTime.replace(/-/g, "/"))
-            switch (period) {
-                case 'day':
-                    endTime = startTime;
-                    break;
-                case 'week':
-                    endTime.setDate(startTime.getDate() + 7);
-                    break;
-                case 'month':
-                    endTime.setMonth(startTime.getMonth() + 1);
-                    endTime.setDate(startTime.getDate() - 1);
-                    break;
-            }
-            timeStr += 'begin=' + timeFormat(startTime, false) + '&end=' + timeFormat(endTime, false);
-        }
-        var settings = {
-            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pageNo=' + pageNo + '&pageSize=50',
-            type: 'GET',
-            dataType: 'json'
-        };
-
-        var loadMoreFun = function(data) {
-            $('#loadMore').hide();
-            $('#showChart').show();
-            if (data.length) {
-                pageNo++;
-                $('.search-result').show();
-                $.each(data, function(index, value) {
-                    var str = '<tr><td class="mdl-data-table__cell--non-numeric">',
-                        updateTime = new Date(value.UpdateTime);
-                    updateTime = timeFormat(updateTime, true).slice(5);
-                    str += updateTime + '</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerHumidity + '％</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterHumidity + '％</td></tr>'
-                    $('#searchTbody').append(str);
-                });
-                document.getElementsByTagName('body')[0].addEventListener('touchstart', touchHandler);
-                document.getElementsByTagName('body')[0].addEventListener('touchmove', touchHandler);
-                document.getElementsByTagName('body')[0].addEventListener('touchend', touchHandler);
-            } else {
-                $('#noMore').css('visibility', 'visible');
-            }
-        }
-
-        console.log('http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pagesize=5000');
-
-        $.ajax(settings).done(loadMoreFun);
-        var historyChart = echarts.init(document.getElementById('historyChart'));
-        historyChart.showLoading();
-
-        var settingsPic = {
-            url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pagesize=5000',
-            type: 'GET',
-            dataType: 'json'
-        };
-        $.ajax(settingsPic).done(function(data) {
-            historyChart.hideLoading();
-            drawChart(historyChart, data)
+        $('#historyChart').css({
+            'width': viewWidth + 'px',
+            'height': viewHeight - $('.search-line').get(0).clientHeight - $('.mdl-layout__header').height() + 'px'
         });
 
-    });
+        $('main').scroll(scrollEvent);
 
-    //loadmore
-    var touchstart, touchmove, touchend;
-    if ('ontouchstart' in window) {
-        touchstart = 'touchstart';
-        touchmove = 'touchmove';
-        touchend = 'touchend';
-    } else {
-        touchstart = 'mousedown';
-        touchmove = 'mousemove';
-        touchend = 'mouseup';
-    }
-
-    var touchState, touchStartPos, touchmovePos;
-    var getTouchPos = function(e) {
-        var touches = e.touches;
-        if (touches && touches[0]) {
-            return {
-                x: touches[0].clientX,
-                y: touches[0].clientY
-            };
-        }
-        return {
-            x: e.clientX,
-            y: e.clientY
-        };
-    };
-
-    var touchScroll = function() {
-        if (touchmovePos) {
-            var moveDis = touchmovePos.y - touchStartPos.y,
-                $more = $('#loadMore');
-
-            if (moveDis < 0 && Math.abs(moveDis) > viewHeight / 5 && $more.attr('data-state') == 'true') {
-                $more.css('visibility', 'visible').attr('data-state', 'false');
-                var settings = {
-                    url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pageNo=' + pageNo + '&pageSize=5',
-                    type: 'GET',
-                    dataType: 'json'
-                }
-                pageNo++;
-                $.ajax(settings).done(function(data) {
-                    $more.css('visibility', 'hidden');
-                    if (data.length) {
-                        $.each(data, function(index, value) {
-                            var str = '<tr><td class="mdl-data-table__cell--non-numeric">',
-                                updateTime = new Date(value.UpdateTime);
-                            updateTime = timeFormat(updateTime, true).slice(5);
-                            str += updateTime + '</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerHumidity + '％</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterHumidity + '％</td></tr>';
-                            $('#searchTbody').append(str);
-                        });
-                    } else {
-                        $('#noMore').css('visibility', 'visible');
-                        document.getElementsByTagName('body')[0].removeEventListener('touchstart', touchHandler);
-                        document.getElementsByTagName('body')[0].removeEventListener('touchmove', touchHandler);
-                        document.getElementsByTagName('body')[0].removeEventListener('touchend', touchHandler);
-                    }
-                }).done(function() {
-                    $more.attr('data-state', 'true');
-                });
-            }
-        }
-    };
-    var touchHandler = function(e) {
-        var type = e.type;
-        switch (type) {
-            case 'touchstart':
-                touchState = 'TS';
-                touchStartPos = getTouchPos(e);
-                break;
-            case 'touchmove':
-                touchState = 'TM';
-                touchmovePos = getTouchPos(e);
-                touchScroll();
-                break;
-            case 'touchend':
-                touchState = 'TE';
-                touchScroll();
-                break;
-        }
-    }
-
-    // var mouseHandler = function(e){
-    //     var e = e || window.target;
-    // }
-
-    $('main').scroll(function() {
-        if ($(this).scrollTop() + $(this).get(0).clientHeight >= ($(this).get(0).scrollHeight - $('#loadmore').height()) / 4 * 3) {
-            var settings = {
-                url: 'http://boxapi.losta.net/apiv1/datum/history/' + r + timeStr + '&pageNo=' + pageNo + '&pageSize=5',
-                type: 'GET',
-                dataType: 'json'
-            }
-            pageNo++;
-            $.ajax(settings).done(function(data) {
-                $('#loadMore').css('visibility', 'hidden');
-                if (data.length) {
-                    $.each(data, function(index, value) {
-                        var str = '<tr><td class="mdl-data-table__cell--non-numeric">',
-                            updateTime = new Date(value.UpdateTime);
-                        updateTime = timeFormat(updateTime, true).slice(5);
-                        str += updateTime + '</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.InnerHumidity + '％</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterTemp + '℃</td><td class="mdl-data-table__cell--non-numeric">' + value.OutterHumidity + '％</td></tr>';
-                        $('#searchTbody').append(str);
-                    });
-                } else {
-                    $('#noMore').show();
-                }
-            }).done(function() {
-                $('#loadMore').attr('data-state', 'true');
-            });
-        }
-
+        $('#showChart').on('click', function() {
+            $(this).hide();
+            $('#historyList').hide();
+            $('#historyChart').show();
+            $('.change-chart-btn').show();
+            $('#showTable').show();
+        });
+        $('#showTable').on('click', function() {
+            $(this).hide();
+            $('#historyList').show();
+            $('#historyTable').show();
+            $('#historyChart').hide();
+            $('.change-chart-btn').hide();
+            $('#showChart').show();
+        });
     })
-
-    $('#showChart').on('click', function() {
-        $(this).hide();
-        $('#historyList').hide();
-        $('#historyChart').show();
-        $('.change-chart-btn').show();
-        $('#showTable').show();
-        document.getElementsByTagName('body')[0].removeEventListener('touchstart', touchHandler);
-        document.getElementsByTagName('body')[0].removeEventListener('touchmove', touchHandler);
-        document.getElementsByTagName('body')[0].removeEventListener('touchend', touchHandler);
-    });
-    $('#showTable').on('click', function() {
-        $(this).hide();
-        $('#showChart').hide();
-        $('#historyChart').hide();
-        $('.change-chart-btn').hide();
-        $('#historyList').show();
-        $('#showChart').show();
-        document.getElementsByTagName('body')[0].addEventListener('touchstart', touchHandler);
-        document.getElementsByTagName('body')[0].addEventListener('touchmove', touchHandler);
-        document.getElementsByTagName('body')[0].addEventListener('touchend', touchHandler);
-    });
     </script>
 </body>
 

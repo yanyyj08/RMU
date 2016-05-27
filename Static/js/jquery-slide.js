@@ -103,8 +103,8 @@
             },
             _initEvent: function() {
                 var me = this;
-                me.section2.css('left', me._animation().viewWidth + 'px').show();
                 me.section1.on('click', me.className, function(e) {
+                me.section2.css('left', me._animation().viewWidth + 'px').show();
                     e.preventDefault();
                     var target = $(this).attr('data-href');
                     if (target) {
@@ -138,7 +138,7 @@
                 instance = new Instance(me, options);
                 me.data('PageSwipe', instance);
             }
-            if ($.type(options) === 'object') {
+            if ($.type(options) === 'object' || options) {
                 return instance.init();
             }
         });
