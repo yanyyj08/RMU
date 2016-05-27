@@ -204,12 +204,21 @@ var drawChart = function(element, data) {
         color: ['#f6ac49', '#eb5606', '#83ccd2', '#2892c4']
     };
     element.setOption(option1);
-    $('#chartNum').change(function() {
-        if ($(this).val() == 'chart2') {
-            element.setOption(option2);
-        } else {
-            element.setOption(option1);
-        }
+    // $('#chartNum').change(function() {
+    //     if ($(this).val() == 'chart2') {
+    //         element.setOption(option2);
+    //     } else {
+    //         element.setOption(option1);
+    //     }
+    // });
+    $('.change-chart-btn').on('click', 'button', function(){
+    	$(this).addClass('active');
+    	$(this).siblings().removeClass('active');
+    	if($(this).attr('id') === 'drawChart1') {
+    		element.setOption(option1);
+    	} else {
+    		element.setOption(option2);
+    	}
     });
 };
 

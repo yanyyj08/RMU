@@ -621,12 +621,30 @@ select option {
 .search-result .change-chart-btn {
     position: absolute;
     z-index: 1000;
-    margin-left: -60px;
+    margin-left: -100px;
     top: 25px;
     left: 50%;
-    width: 120px;
-    border: 1px solid black;
+    width: 200px;
+    height: 25px;
+    line-height: 25px;
     border-radius: 6px;
+}
+
+.search-result .change-chart-btn button {
+    float: left;
+    -webkit-appearance: none;
+    width: 50%;
+    border: none;
+    text-align: center;
+}
+
+.search-result .change-chart-btn button:focus {
+    outline: none;
+}
+
+.search-result .change-chart-btn .active {
+    background: #ff4081;
+    color: #fff;
 }
 
 .search-result .mdl-data-table {
